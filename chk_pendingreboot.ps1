@@ -1,19 +1,26 @@
 ﻿#Check Pending Reboot on Windows Servers
-#Version: 1.0.0
+#Version: 1.0.1
 
 #Disable Error Output
 $ErrorActionPreference = "silentlycontinue"
 
 #Host List (CSV) to import 
-$host_file =  $PSScriptRoot + "\host_list.csv"
+$host_file =  $PSScriptRoot + "\" + "host_list.csv"
+
 
 #Output file (CSV) for results: Result_PendingReboot_YYYYMMDD-hhmmss.csv
-$output_csv =  $PSScriptRoot + "\Result_PendingReboot_" + (get-date).ToString('yyyyMMdd-hhmmss') + ".csv"
+$output_csv =  $PSScriptRoot + "\" + "Result_PendingReboot_" + (get-date).ToString('yyyyMMdd-hhmmss') + ".csv"
 
 #Registry
-$registry_path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update'
+$registry_path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update"
 $registry_name = "RebootRequired"
 
+#Check if the Host List (CSV) specified exists.
+if ((Test-Path $host_file) -eq $false) {
+    Write-Host "Error: Cannot open Host List (CSV) specified."
+    Write-Host "Exit this script."
+    Exit
+}
 #Set Headers to Output file (CSV)
 echo "HostName, PendingReboot" | Out-File -Append $output_csv -Encoding UTF8
 
